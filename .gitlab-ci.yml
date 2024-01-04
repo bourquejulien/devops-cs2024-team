@@ -3,10 +3,12 @@ image: rust:1.75
 default:
   tags:
     - docker
+
+.cache: &cache
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
-      - .target/
+      - target/
 
 stages:
   - build
@@ -14,6 +16,7 @@ stages:
   - deploy
 
 build:
+  <<: *cache
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -24,6 +27,7 @@ build:
       - target/
 
 lint:
+  <<: *cache
   stage: lint
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -32,23 +36,6 @@ lint:
   script:
     - cargo clippy
 
-#package:
-#  stage: deploy
-#  image: docker:24.0.5
-#  services:
-#    - docker:24.0.5-dind
-#  before_script:
-#    - docker info
-#  variables:
-#    DOCKER_TLS_CERTDIR: "/certs"
-#    IMAGE_NAME: "$CI_REGISTRY_IMAGE/rusters:latest"
-#  script:
-#    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-#    - docker build --target final -t "$IMAGE_NAME" .
-#    - docker push "$IMAGE_NAME"
-#  rules:
-#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 push:
   stage: deploy
   image: brqu/docker-az:latest
@@ -56,9 +43,6 @@ push:
     - docker:24.0.5-dind
   before_script:
     - docker info
-#  needs:
-#    - job: package
-#      artifacts: false
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
     ACR_NAME: "teamacr000cee89641c6587"
