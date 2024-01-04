@@ -37,7 +37,7 @@ async fn root() -> (StatusCode, Html<&'static str>) {
 }
 
 async fn get_status() -> (StatusCode, Json<Value>) {
-    return (StatusCode::OK, Json(json!({ "response": "ok" })));
+    (StatusCode::OK, Json(json!({ "response": "ok" })))
 }
 
 async fn shutdown_signal() {

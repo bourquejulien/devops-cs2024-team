@@ -1,0 +1,44 @@
+image: rust:1.75
+
+default:
+  tags:
+    - docker
+  before_script:
+    - cargo build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .target/
+
+stages:
+  - build
+  - lint
+  - deploy
+
+build:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - cargo build --release
+  artifacts:
+    paths:
+      - target/
+
+lint:
+  stage: lint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - cargo clippy
+
+package:
+  stage: deploy
+  needs:
+    - job: build
+      artifacts: true
+  script:
+    - ls # TODO
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
