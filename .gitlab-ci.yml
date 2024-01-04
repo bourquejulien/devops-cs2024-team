@@ -3,8 +3,6 @@ image: rust:1.75
 default:
   tags:
     - docker
-  before_script:
-    - cargo build
   cache:
     key: ${CI_COMMIT_REF_SLUG}
     paths:
@@ -18,10 +16,9 @@ stages:
 build:
   stage: build
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - cargo build --release
+    - cargo build
   artifacts:
     paths:
       - target/
@@ -35,10 +32,36 @@ lint:
 
 package:
   stage: deploy
-  needs:
-    - job: build
-      artifacts: true
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  before_script:
+    - docker info
+  #  needs:
+  #    - job: build
+  #      artifacts: true
+  variables:
+    IMAGE_NAME: "$CI_REGISTRY_IMAGE/rusters:latest"
   script:
-    - ls # TODO
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build --target final -t "$IMAGE_NAME" .
+    - docker push "$IMAGE_NAME"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+push:
+  stage: deploy
+  image: docker:24.0.5
+  before_script:
+    - docker info
+  needs:
+    - job: package
+      artifacts: false
+  variables:
+    IMAGE_NAME: "$CI_REGISTRY_IMAGE/rusters:latest"
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+    - docker build --target final -t "$IMAGE_NAME" .
+    - docker push "$IMAGE_NAME"
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
