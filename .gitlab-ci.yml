@@ -17,6 +17,7 @@ build:
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - cargo build
   artifacts:
@@ -27,6 +28,7 @@ lint:
   stage: lint
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - cargo clippy
 
@@ -57,9 +59,8 @@ push:
     - apk update
     - apk upgrade
     - apk add bash make py-pip
-    - apk add --virtual gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
+    - apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo make
     - pip install azure-cli
-    - apk del --purge build
 #  needs:
 #    - job: package
 #      artifacts: false
