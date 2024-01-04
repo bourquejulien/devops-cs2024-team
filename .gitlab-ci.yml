@@ -61,13 +61,10 @@ push:
 #      artifacts: false
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    IMAGE_NAME: "teamacr000cee89641c6587.azurecr.io/rusters:latest"
+    ACR_NAME: "teamacr000cee89641c6587"
   script:
     - az login --tenant $AZURE_TENANT_ID --service-principal -u $AZURE_CLIENT_ID --federated-token $CI_JOB_JWT_V2
-    - az acr login -n teamacr000cee89641c6587
-    - docker build --target final -t "$IMAGE_NAME" .
-    - docker push "$IMAGE_NAME"
-    - az aks get-credentials --resource-group CS-${TEAM_NAME}-rg --name team-cluster
-    - helm install rusters helm/
+    - az acr login -n $ACR_NAME
+    - ./deploy-aks.sh $TEAM_NAME $ACR_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
