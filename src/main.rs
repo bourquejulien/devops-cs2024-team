@@ -14,7 +14,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(root))
-        .route("/status", get(get_status))
+        .route("/healthz", get(get_health_status))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new()
@@ -24,7 +24,7 @@ async fn main() {
 
         );
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:4000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:5000").await.unwrap();
     tracing::debug!("listening on {}", listener.local_addr().unwrap());
 
     axum::serve(listener, app)
@@ -33,10 +33,10 @@ async fn main() {
 }
 
 async fn root() -> (StatusCode, Html<&'static str>) {
-    (StatusCode::NOT_FOUND, Html("<h1>Not implemented<h1/>"))
+    (StatusCode::NOT_FOUND, Html("<h1>Not implemented...<h1/>"))
 }
 
-async fn get_status() -> (StatusCode, Json<Value>) {
+async fn get_health_status() -> (StatusCode, Json<Value>) {
     (StatusCode::OK, Json(json!({ "response": "ok" })))
 }
 
