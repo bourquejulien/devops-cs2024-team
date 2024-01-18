@@ -1,10 +1,9 @@
-use axum::{Router, routing::get, response::Json,};
+use axum::{Router, routing::get,};
 use tokio::signal;
-use axum::http::StatusCode;
-use axum::response::Html;
-use serde_json::{Value, json};
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
+
+mod controllers;
 
 #[tokio::main]
 async fn main() {
@@ -13,8 +12,9 @@ async fn main() {
         .init();
 
     let app = Router::new()
-        .route("/", get(root))
-        .route("/healthz", get(get_health_status))
+        .route("/", get(controllers::root))
+        .route("/healthz", get(controllers::get_health_status))
+        .route("/jungle", get(controllers::jungle::get_status))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new()
@@ -30,14 +30,6 @@ async fn main() {
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
         .await.unwrap();
-}
-
-async fn root() -> (StatusCode, Html<&'static str>) {
-    (StatusCode::NOT_FOUND, Html("<h1>Not implemented...<h1/>"))
-}
-
-async fn get_health_status() -> (StatusCode, Json<Value>) {
-    (StatusCode::OK, Json(json!({ "response": "ok" })))
 }
 
 async fn shutdown_signal() {
