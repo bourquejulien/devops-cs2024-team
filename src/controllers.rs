@@ -1,4 +1,5 @@
 pub mod jungle;
+pub mod router;
 
 use axum::http::StatusCode;
 use axum::response::Html;

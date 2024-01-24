@@ -15,13 +15,13 @@ async fn main() {
         .route("/", get(controllers::root))
         .route("/healthz", get(controllers::get_health_status))
         .route("/jungle", get(controllers::jungle::get_status))
+        .route("/router", get(controllers::router::get))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new()
                     .level(Level::INFO))
                 .on_response(trace::DefaultOnResponse::new()
                     .level(Level::INFO)),
-
         );
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:5000").await.unwrap();
