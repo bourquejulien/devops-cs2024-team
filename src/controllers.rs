@@ -9,7 +9,7 @@ use axum::{response::Json,};
 pub async fn root() -> (StatusCode, Html<&'static str>) {
     let html_response = r#"
     <H1>Jungle:</H1>
-    <a href="url">Here</a>
+    <a href="jungle">Here</a>
     "#;
 
     (StatusCode::NOT_FOUND, Html(html_response))
