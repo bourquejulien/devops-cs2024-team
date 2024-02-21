@@ -11,17 +11,17 @@ fn bruteforce(hash: &str, dictionary: &Vec<String>) -> Option<String> {
     return None;
 }
 
-fn decode_bytes(bytes: &Vec<u8>) -> Result<String, String> {
+fn decode_bytes(bytes: &Vec<u8>, dictionary: &Vec<String>) -> Result<String, String> {
     if let Ok(hash) = std::str::from_utf8(&bytes) {
-        return bruteforce(hash, &vec![String::from("")]).ok_or(String::from("No results"));
+        return bruteforce(hash, dictionary).ok_or(String::from("No results"));
     }
 
     return Err(String::from("Failed to read hash as string"));
 }
 
-pub fn decode(message: &str) -> Result<String, String> {
+pub fn decode(message: &str, dictionary: &Vec<String>) -> Result<String, String> {
     if let Ok(bytes) = general_purpose::STANDARD.decode(message) {
-        let result = decode_bytes(&bytes);
+        let result = decode_bytes(&bytes, dictionary);
 
         if let Ok(message) = &result {
             println!("Message: {}", message);
