@@ -23,8 +23,8 @@ pub fn decode(message: &str, dictionary: &Vec<String>) -> Result<String, String>
     if let Ok(bytes) = general_purpose::STANDARD.decode(message) {
         let result = decode_bytes(&bytes, dictionary);
 
-        if let Ok(message) = &result {
-            println!("Message: {}", message);
+        if let Ok(decoded_password) = &result {
+            tracing::info!("Found decoded password: {}", decoded_password);
         }
 
         return result;
