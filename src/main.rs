@@ -1,4 +1,7 @@
-use axum::{Router, routing::get,};
+extern crate core;
+
+use std::sync::Arc;
+use axum::{Extension, Router, routing::get};
 use axum::routing::post;
 use tokio::signal;
 use tower_http::trace::{self, TraceLayer};
@@ -15,11 +18,19 @@ async fn main() {
         .with_max_level(Level::DEBUG)
         .init();
 
+    let dictionary = get_dictionary();
+    if let None = dictionary {
+        panic!("Cannot load dictionary");
+    }
+
+    let dictionary = Arc::new(dictionary.unwrap());
+
     let app = Router::new()
         .route("/", get(controllers::root))
         .route("/healthz", get(controllers::get_health_status))
         .route("/jungle", get(controllers::jungle::get_status))
         .route("/router", post(controllers::router::post))
+        .layer(Extension(dictionary))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new()
@@ -34,6 +45,12 @@ async fn main() {
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
         .await.unwrap();
+}
+
+fn get_dictionary() -> Option<Vec<String>> {
+    let response = ureq::get("https://raw.githubusercontent.com/DavidWittman/wpxmlrpcbrute/master/wordlists/1000-most-common-passwords.txt").call().ok()?;
+    let words = response.into_string().ok()?.split("\n").map(|word| word.to_string()).collect::<Vec<_>>();
+    return Some(words);
 }
 
 async fn shutdown_signal() {

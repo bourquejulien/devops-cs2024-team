@@ -50,7 +50,7 @@ pub async fn post(route: Query<Route>, body: Option<String>) -> (StatusCode, Res
 fn decode_password(payload: Option<&String>) -> (StatusCode, Response)  {
     let door: Result<Door, String> = payload
         .ok_or(String::from("No payload"))
-        .and_then(|payload| serde_json::from_str(payload.as_str()).map_err(|err| String::from("Failed to parse payload")));
+        .and_then(|payload| serde_json::from_str(payload.as_str()).map_err(|_| String::from("Failed to parse payload")));
 
     match door {
         Ok(door) => {
