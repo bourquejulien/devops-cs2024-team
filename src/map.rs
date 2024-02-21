@@ -15,7 +15,7 @@ pub fn handle_map(payload: Option<&String>) -> (StatusCode, Response) {
         .and_then(|payload| serde_json::from_str(payload.as_str()).map_err(|err| String::from("Failed to parse payload")));
 
     if let Ok(data) = request {
-        let result = ureq::get(format!("http://localhost:7000/?x={}&y={}&size={}", data.x, data.y, data.size).as_str()).call();
+        let result = ureq::get(format!("http://map/?x={}&y={}&size={}", data.x, data.y, data.size).as_str()).call();
 
         if let Ok(map) = result {
             return (StatusCode::OK, map.into_string().unwrap().into_response());

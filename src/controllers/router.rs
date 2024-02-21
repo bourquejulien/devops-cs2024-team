@@ -1,5 +1,4 @@
 use std::fmt::Debug;
-use axum::body::Body;
 use axum::extract::Query;
 use axum::http::StatusCode;
 use axum::Json;
@@ -16,6 +15,7 @@ pub struct Route {
 struct Weather {
     location: String,
     temperature: f64,
+    #[allow(non_snake_case)]
     windSpeed: f64,
     precipitation: f64,
     description: String
@@ -24,6 +24,7 @@ struct Weather {
 pub async fn post(route: Query<Route>, body: Option<String>) -> (StatusCode, Response) {
     if let Some(request) = &route.request {
         return match request.as_str() {
+            "status" => (StatusCode::OK, "OK".into_response()),
             "weather" => (StatusCode::OK, handle_weather()),
             "map" => handle_map(body.as_ref()),
             &_ => (StatusCode::NOT_FOUND, String::from("Invalid request provided").into_response())
