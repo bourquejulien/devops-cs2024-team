@@ -32,7 +32,7 @@ fn run(hash: String, dictionary: Arc<Vec<String>>) {
 }
 
 fn send_response(password: &str) {
-    let response = ureq::get(format!("http://ai.private.dev.cs2024.one/jungle/unlock?password={}", password).as_str()).call();
+    let response = ureq::post(format!("http://ai.private.dev.cs2024.one/jungle/unlock?password={}", password).as_str()).call();
 
     if let Err(error) = response {
         tracing::warn!("Failed to send password with error: {}", error);
