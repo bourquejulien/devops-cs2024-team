@@ -6,6 +6,8 @@ use tracing::Level;
 
 mod controllers;
 mod map;
+mod door_handler;
+mod door;
 
 #[tokio::main]
 async fn main() {
