@@ -1,9 +1,11 @@
 use axum::{Router, routing::get,};
+use axum::routing::post;
 use tokio::signal;
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
 mod controllers;
+mod map;
 
 #[tokio::main]
 async fn main() {
@@ -15,7 +17,7 @@ async fn main() {
         .route("/", get(controllers::root))
         .route("/healthz", get(controllers::get_health_status))
         .route("/jungle", get(controllers::jungle::get_status))
-        .route("/router", get(controllers::router::get))
+        .route("/router", post(controllers::router::post))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new()

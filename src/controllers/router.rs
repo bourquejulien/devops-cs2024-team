@@ -1,13 +1,15 @@
+use std::fmt::Debug;
+use axum::body::Body;
 use axum::extract::Query;
 use axum::http::StatusCode;
 use axum::Json;
 use axum::response::{IntoResponse, Response};
 use serde::{Deserialize, Serialize};
+use crate::map::handle_map;
 
 #[derive(Deserialize)]
 pub struct Route {
     request: Option<String>,
-    address: Option<String>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -19,10 +21,11 @@ struct Weather {
     description: String
 }
 
-pub async fn get(route: Query<Route>) -> (StatusCode, Response) {
+pub async fn post(route: Query<Route>, body: Option<String>) -> (StatusCode, Response) {
     if let Some(request) = &route.request {
         return match request.as_str() {
             "weather" => (StatusCode::OK, handle_weather()),
+            "map" => handle_map(body.as_ref()),
             &_ => (StatusCode::NOT_FOUND, String::from("Invalid request provided").into_response())
         };
     }

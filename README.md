@@ -118,6 +118,8 @@ Ici, l'objectif n'est pas de déployer à partir de Gitlab, mais bien à partir 
 
 TODO : Décider si le script est fourni...
 
+TODO : Tout doit être scripté
+
 Les variables nécéssaires au déploiement sont les suivantes :
 - Votre nom d'utilisateur Azure
 - Votre mot de passe Azure.
