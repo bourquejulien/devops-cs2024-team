@@ -1,4 +1,4 @@
-use futures::executor::ThreadPool;
+use threadpool::ThreadPool;
 use crate::door;
 
 pub(crate) struct ParallelExecutor {
@@ -6,7 +6,11 @@ pub(crate) struct ParallelExecutor {
 }
 
 impl ParallelExecutor {
-    pub(crate) fn execute(&self: ParallelExecutor, hash: String) {
+    pub(crate) fn new() -> ParallelExecutor {
+        return ParallelExecutor{ pool: ThreadPool::new(2), }
+    }
+
+    pub(crate) fn execute(&self, hash: String) {
         self.pool.execute(move || run(hash));
     }
 }

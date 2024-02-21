@@ -16,4 +16,6 @@ ureq = "2.9.1"
 serde = { version = "1.0.194", features = ["derive"] }
 base64 = { version = "0.21.7", features = [] }
 libbruteforce = "4.0.1"
-futures = { version = "0.3.30", features = ["thread-pool"] }
+threadpool = "1.8.1"
+futures = "0.3.30"
+lazy_static = "1.4.0"
