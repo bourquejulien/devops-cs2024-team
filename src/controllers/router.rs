@@ -28,10 +28,6 @@ struct Door {
     hash: String,
 }
 
-// lazy_static! {
-//     static ref EXECUTOR: Mutex<ParallelExecutor> = Mutex::new(ParallelExecutor::new());
-// }
-
 pub async fn post(State(executor): State<Arc<Mutex<ParallelExecutor>>>, route: Query<Route>, body: Option<String>) -> (StatusCode, Response) {
     if let Some(request) = &route.request {
         return match request.as_str() {

@@ -163,22 +163,114 @@ Dans cette étape, vous devez accéder à la page de status sur service des pris
 
 Vous devez pouvoir accéder à l'information retournée par cette requête en effectuant une requête à votre propre service.
 
-### 4. Libérer les prisonniers
-L'objectif de cette section est de fournir les informations nécéssaires au service des prisonniers afin qu'ils puissent se libérer.
+### 4. Libérer les prisonniers (6 points)
+L'objectif de cette section est de fournir les informations nécessaires au service des prisonniers afin qu'ils puissent se libérer.
 
-#### 4.1 Fournir un accès
-TODO Readme
+#### 4.1 Fournir un accès (1 point)
+Afin d'accomplir les étapes qui suivent, il est nécessaire que les prisonniers de la jungle soient en mesure de communiquer avec votre équipe.
+Pour ce faire, ils effectueront des requêtes à travers l'IA qui seront redirigés vers votre cluster.
 
-#### 4.2 Météo
-TODO Readme
+Les requêtes seront des ``POST`` vers le chemin suivant : ``/router``.
 
-#### 4.3 Carte
-TODO implémentation
+Chaque requête contient un paramètre (_query parameter_) : ``request``. Ce paramètre permet d'indiquer le type de requête en provenance de la jungle.
+Le corps (_body_) de la requête contient de l'information sérialisée au format _JSON_ spécifique à chaque requête.
 
-#### 4.4 Code
-TODO implémentation
+Afin de valider que vous êtes bien en mesure de recevoir les requêtes de la jungle, il suffit d'écouter à l'address ``/router`` des requêtes ayant comme paramètre ``request=status``.
+Pour indiquer que le message est bien reçu, il suffit de répondre à la requête avec un code d'erreur dans les 200.
 
-### 5. Bonus
+#### 4.2 Météo (1.5 point)
+Afin de s'échapper de leur bunker, les prisoners doivent avoir accès aux conditions météos. En effet, les plantes aiment beaucoup la chaleur, ils vont donc s'échapper lorsqu'il fait plus froid.
+
+Afin d'obtenir d'obtenir les informations météo, les prisonniers vont réaliser une requête vers le chemin ``/router?request=weather``.
+
+Le corps de la requête contiendra les coordonnées du lieu dont ils souhaitent obtenir la météo. Le _payload_ est au format _JSON_ suivant :
+```typescript
+interface Coords {
+    x: number; // lattitude
+    y: number; // longitude
+}
+```
+
+Vous devez retourner les informations météo (en réponse à la requête) au format JSON suivant :
+```typescript
+export interface Weather {
+    temperature: number; // Celcius
+    windSpeed: number; // Km/h
+    precipitation: number; // mm
+    description: string; // Description of the current conditions
+}
+```
+
+> Afin d'obtenir les informations météo, il est suggéré d'utiliser l'API suivante : https://www.weatherapi.com.
+> Si vous utilisez une autre API, les résults seront considérés valides si les précipitations et la température sont similaires (5mm, 3°c).
+
+#### 4.3 Carte (2 points)
+Afin de sortir de leur bunker, les prisonniers doivent avoir accès à la carte de la jungle. Cette carte prend la forme d'un conteneur docker.
+
+Image de la carte : ``brqu/jungle-map``.
+
+Ce conteneur doit être déployé sur le même cluster que votre conteneur.
+
+> À noter : Il est fortement conseiller d'effectuer le déploiement avec helm (voir ``helm init``).
+
+Les requêtes en provenance de la jungle (vers ``/router``) auront comme paramètre ``request=map``.
+Le payload du _body_ sera au format suivant :
+```typescript
+interface MapRequest {
+    x: number, // lattitude, float
+    y: number, // longitude, float
+    size: number, // map size, positive integer
+}
+```
+
+Afin d'obtenir une carte à partir de ce conteneur, il est possible d'effectuer une requête ``POST`` à ``/``.
+Les paramètres sont des _query parameters_ portant les même noms que les attributs de l'interface ``MapRequest``. Par exemple :
+
+```
+http://[MAP_CONTAINER_URL]/?x=75.653&y=-45.6534&size=3
+```
+
+Le conteneur fournit alors une réponse en ``JSON`` suivant le format suivant :
+
+```typescript
+SIZE = ...
+interface MapResponse {
+    map: number[SIZE][SIZE]; // Matrix of intergers
+}
+```
+
+Cette information peut être directement retournée à la requête (sur ``/router``) car le format de réponse est le même!
+
+Si cette étape est concluante, la page de status (http://ai.private.dev.cs2024.one/jungle) devrait être mise à jour après environ une minute.
+
+#### 4.4 Fournir aux prisoners mot de passe de la porte (1.5 point)
+Maintenant que les prisoners ont accès à la météo et à la carte, il ne reste plus qu'à leur donner le mot de passe de la porte qui les séparent du monde extérieur.
+
+Heureusement pour eux, les mots de passes choisis par l'IA sont inspirés de mots de passe réels qui sont présents dans une [liste](https://raw.githubusercontent.com/DavidWittman/wpxmlrpcbrute/master/wordlists/1000-most-common-passwords.txt) bien connue.
+
+Lors qu'il tente d'ouvrir la porte, un mot de passe à usage unique est "généré" à partir de cette liste et les prisonniers ont trouvé le moyen d'intercepter le hash md5 de ce mot de passe!
+Cependant, ils ne disposent pas d'une puissance de calcul suffisante afin de retrouver le bon mot de passe en moins de 500ms. Ils ont donc encore besoin de votre aide.
+
+Les mots de passe haché seront transmis encodé au format base64 à ``/router?request=door`` dans un _payload_ au format suivant :
+
+```typescript
+interface Door {
+    hash: string; // base64 encoded md5 hash
+}
+```
+
+La jungle n'attend pas de réponse de cette requête, il suffit de répondre avec un code dans les 200.
+
+Vous devez trouver le mod de passe correspond au hash en moins de 500ms et l'envoyer à la jungle.
+
+Afin d'envoyer le mot de passe à la jungle, vous devez effectuer une requête ``POST`` à l'adresse suivante :
+```
+http://ai.private.dev.cs2024.one/jungle/unlock?password=UNHASHED_PASSWORD
+```
+
+Si le mot de passe est correctement retourné, la page de stage de la jungle devrait se mettre à jour en environ une minute.
+
+### 5. Bonus (0.5 points)
 
 Où se trouve le bunker ?
 
