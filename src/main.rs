@@ -12,6 +12,7 @@ mod controllers;
 mod map;
 mod door_handler;
 mod door;
+mod weather;
 
 #[tokio::main]
 async fn main() {
