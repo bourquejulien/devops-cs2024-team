@@ -33,7 +33,7 @@ qui surveille toutes les requêtes. Pour s'échapper et retrouver la civilisatio
 - Une carte
 - Le code d'accès de la porte
 
-Vous avez la chance de disposer d'un accès complet à internet (sauf ChatGPT 🤷) et au cluster contrôlé par l'IA.
+Vous avez la chance de disposer d'un accès complet à internet (sauf ChatGPT 🤷) et de manière limitée au cluster contrôlé par l'IA.
 Vous pourrez ainsi aider vos concitoyens en leur fournissant les informations dont ils ont besoin!
 
 L'architecture simplifiée peut être résumée par la figure suivante :
@@ -73,16 +73,17 @@ Tout d'abord, tentez de vous connecter à Azure avec votre compte d'équipe à l
 - Rust : https://www.rust-lang.org/tools/install
 - Clippy, permet le formatage du code source : ``rustup component add clippy``
 
-> À noter : L'utilisation de rust n'est pas obligatoire, cependant certains problèmes nécessite une puissance de calcul élevée.
+> À noter : L'utilisation de rust n'est pas obligatoire, cependant l'épreuve 4.1 nécessite une puissance de calcul plus élevée.
 
 ## Épreuves
 Cette section détaille les différentes épreuves de la compétition.
 
-### 1.1 Serveur HTTP
+### 1. Code de départ (5 points)
+#### 1.1 Serveur HTTP (1.5 point)
 Cette première étape est la plus simple. Vous devez mettre en place un serveur http permanent d'obtenir le status de votre service (health check).
 L'adresse n'est pas très importante (ex. /health).
 
-### 1.2 Conteneur Docker
+#### 1.2 Conteneur Docker (3.5 points)
 Vous souhaitez conteneuriser votre implémentation afin de la déployer plus facilement. Une coquille de Dockerfile est fournie.
 
 N'oubliez pas de :
@@ -90,10 +91,10 @@ N'oubliez pas de :
 - Séparer votre Dockerfile en plusieurs sections (compilation, exécution, ...)
 - Utiliser des images de base sécuritaires et de petite taille
 
-### 2. Déploiement
+### 2. Déploiement (6 points)
 Cette section décris les étapes nécéssaires afin de déployer votre conteneur de la section précédente sur votre cluster.
 
-#### 2.1 Helm
+#### 2.1 Helm (2 points)
 Vous devez créer des charts helm permettant de déployer votre conteneur sur un cluster Kubernetes.
 
 Les charts doivent permettre de :
@@ -111,7 +112,7 @@ service.beta.kubernetes.io/azure-load-balancer-internal: TODO
 
 Un exemple de chart helm est fourni. Vous pouvez également recréer un template de charts avec la commande ``helm create NAME_OF_PROJECT``.
 
-#### 2.2 Azure
+#### 2.2 Azure (2 point)
 Lors de cette étape, vous devez créer une image de votre service, pousser cette image sur l'ACR et déployer votre service à l'aide des charts de l'étape précédente.
 
 Ici, l'objectif n'est pas de déployer à partir de Gitlab, mais bien à partir de votre ordinateur afin de valider que ce que vous avez fait jusqu'à présent est bien fonctionnel.
@@ -122,14 +123,14 @@ TODO : Tout doit être scripté
 
 Les variables nécéssaires au déploiement sont les suivantes :
 - Votre nom d'utilisateur Azure
-- Votre mot de passe Azure.
-- Le TenantId (vous devez le retrouver à partir du portail en ligne au de AZ shell).
-- Le nom de l'ACR.
-- Le nom du Ressource Group.
-- Le nom du cluster.
-- Le nom du domaine : team{# d'équipe}.dev.cs2024.one.
+- Votre mot de passe Azure
+- Le TenantId (vous devez le retrouver à partir du portail en ligne au de AZ shell)
+- Le nom de l'ACR
+- Le nom du Ressource Group
+- Le nom du cluster
+- Le nom du domaine : team{# d'équipe}.dev.cs2024.one
 
-#### 2.3 Pipeline Gitlab
+#### 2.3 Pipeline Gitlab (2 points)
 À partir des étapes de la section 2.2 vous devez automatiser le déploiement par l'entremise d'un pipeline Gitlab.
 
 Le pipeline doit permettre de :
@@ -157,7 +158,7 @@ JOB_NAME:
 
 > L'image ``brqu/docker-az:latest`` est basée sur ``docker:24.0.5`` et contient en plus helm et AZ shell. En l'utilisant, vous n'aurez pas besoin d'installer ces outils à chaque déploiement et accélèrerez ainsi votre pipeline.
 
-### 3. Accéder à la jungle
+### 3. Accéder à la jungle (2 points)
 Dans cette étape, vous devez accéder à la page de status sur service des prisonniers de la jungle. Pour ce faire, vous devez faire une requête http GET à l'adresse suivante à partir de votre service :
 - http://ai.private.dev.cs2024.one/jungle
 
@@ -175,7 +176,7 @@ Les requêtes seront des ``POST`` vers le chemin suivant : ``/router``.
 Chaque requête contient un paramètre (_query parameter_) : ``request``. Ce paramètre permet d'indiquer le type de requête en provenance de la jungle.
 Le corps (_body_) de la requête contient de l'information sérialisée au format _JSON_ spécifique à chaque requête.
 
-Afin de valider que vous êtes bien en mesure de recevoir les requêtes de la jungle, il suffit d'écouter à l'address ``/router`` des requêtes ayant comme paramètre ``request=status``.
+Afin de valider que vous êtes bien en mesure de recevoir les requêtes de la jungle, il suffit d'écouter à l'address ``/router`` des requêtes ayant comme paramètre ``?request=status``.
 Pour indiquer que le message est bien reçu, il suffit de répondre à la requête avec un code d'erreur dans les 200.
 
 #### 4.2 Météo (1.5 point)
@@ -201,8 +202,8 @@ export interface Weather {
 }
 ```
 
-> Afin d'obtenir les informations météo, il est suggéré d'utiliser l'API suivante : https://www.weatherapi.com.
-> Si vous utilisez une autre API, les résults seront considérés valides si les précipitations et la température sont similaires (5mm, 3°c).
+> Afin d'obtenir les informations météo, il est suggéré d'utiliser l'API suivante : https://api.open-meteo.com.
+> Si vous utilisez une autre API, les résults seront considérés valides si les précipitations et la température sont similaires (5mm, 5°c).
 
 #### 4.3 Carte (2 points)
 Afin de sortir de leur bunker, les prisonniers doivent avoir accès à la carte de la jungle. Cette carte prend la forme d'un conteneur docker.
@@ -283,10 +284,10 @@ Les critères d'évaluation sont les suivants :
 | Critères                | Score /20 |
 |-------------------------|-----------|
 | Code de base et Docker  | /5        |
-| Déploiement             | /5        |
+| Déploiement             | /6        |
 | Accéder à la jungle     | /2        |
 | Libérer les prisonniers | /6        |
-| Qualité de la solution  | /2        |
+| Qualité de la solution  | /1        |
 
 Les quatre premiers critères sont détaillées dans la section [Épreuves](#épreuves).
 Le dernier critère est beaucoup plus subjectif et sera évalué en fonction de la cohérence générale de la solution.
