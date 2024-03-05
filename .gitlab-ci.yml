@@ -49,6 +49,6 @@ push:
   script:
 #    - az login --tenant $AZURE_TENANT_ID --service-principal -u $AZURE_CLIENT_ID --federated-token $CI_JOB_JWT_V2
     - az login --tenant $AZURE_TENANT_ID -u $AZURE_USERNAME -p $AZURE_PASSWORD
-    - ./deploy-aks.sh $TEAM_NAME
+    - ./deploy-aks-private.sh $TEAM_NAME
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

@@ -97,7 +97,7 @@ Cette section décris les étapes nécessaires afin de déployer votre conteneur
 Vous devez créer des charts helm permettant de déployer votre conteneur sur un cluster Kubernetes.
 
 Les charts doivent permettre de :
-- Déployer votre service à partir du ACR (Azure Container Registry) mis à votre disposition.
+- Déployer votre service à partir du ACR (Azure Container Registry) mis à votre disposition (l'image sera y sera poussée en 2.2).
 - Ajouter un service kubernetes permettant d'accéder à votre pod.
 - Ajouter un Ingress permettant d'accéder à votre service depuis l'extérieur et ainsi intéragir avec ce dernier.
 - Ajouter un Service permettant à l'autre cluster (celui de l'IA) d'accéder au vôtre.
@@ -156,6 +156,8 @@ JOB_NAME:
 ```
 
 > L'image ``brqu/docker-az:latest`` est basée sur ``docker:24.0.5`` et contient en plus helm et AZ shell. En l'utilisant, vous n'aurez pas besoin d'installer ces outils à chaque déploiement et accélèrerez ainsi votre pipeline.
+
+> Pour vous connecter à Azure à partir du pipeline vous devrez utiliser ``az login`` avec votre nom d'utilisateur et votre mot de passe.
 
 ### 3. Accéder à la jungle (2 points)
 Dans cette étape, vous devez accéder à la page de status sur service des prisonniers de la jungle. Pour ce faire, vous devez faire une requête http GET à l'adresse suivante à partir de votre service :
@@ -306,13 +308,13 @@ critères suivants (perte de 1 point au maximum) :
 - Valeurs propres à environment présentes directement dans le code (tentez d'utiliser des variables d'environnement) : -0.25.
 
 > À noter : L'évaluation est partiellement automatisée, néanmoins l'ensemble de votre travail sera révisé manuellement.
-> En cas de doute, n'hésitez pas à indiquer vos suppositions dans la section [Commentaires](#Commentates) à la fin de ce fichier.
+> En cas de doute, n'hésitez pas à indiquer vos suppositions dans la section [Commentaires](#Commentaires) à la fin de ce fichier.
 
 ### Remise
 - La remise se fait par Git, vous devez soumettre par l'entremise de ce dépôt tout votre travail
 - Le dernier commit poussé sur la branche `main` sera corrigé
 - Tout commit poussé après l'heure de remise sera ignoré
 
-## Commentates
+## Commentaires
 
 ...

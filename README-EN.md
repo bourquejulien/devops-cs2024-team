@@ -90,7 +90,7 @@ This section describes the steps necessary to deploy your container from the pre
 You must create Helm charts to deploy your container to a Kubernetes cluster.
 
 The charts should allow you to:
-- Deploy your service from the ACR (Azure Container Registry) provided to you.
+- Deploy your service from the ACR (Azure Container Registry) provided to you (the image will be push during the next step).
 - Add a Kubernetes service to access your pod.
 - Add an Ingress to access your service from outside and thus interact with it.
 - Add a Service to allow the other cluster (the one with the AI) to access yours.
@@ -149,6 +149,8 @@ JOB_NAME:
 ```
 
 > The image ``brqu/docker-az:latest`` is based on ``docker:24.0.5`` and also contains helm et AZ shell. By using Gitlab pipelines, you won't need to install these tools for each deployment, which will speed up your pipeline.
+
+> To login into the azure client from the pipeline, you will need to use the ``az login`` command with your username and password.
 
 ### 3. Access the Jungle (2 points)
 In this step, you must access the status page on the jungle prisoners' service. To do this, you must make an HTTP GET request to the following address from your service:
