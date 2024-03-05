@@ -115,6 +115,10 @@ The variables required for deployment are as follows:
 - The name of the cluster
 - The domain name: team{team number}.dev.cs2024.one
 
+All these steps must be scripted so than can be easily reproducible. You need to refer to the Helm and Azure cli documentation to complete this step.
+
+> An exemple (``deploy-aks.sh``) is provided. You can start from there.
+
 #### 2.3 Gitlab Pipeline (2 points)
 Based on the steps from section 2.2, you must automate deployment through a Gitlab pipeline.
 
@@ -147,6 +151,14 @@ JOB_NAME:
 In this step, you must access the status page on the jungle prisoners' service. To do this, you must make an HTTP GET request to the following address from your service:
 - http://ai.private.dev.cs2024.one/jungle
 
+The data is returned in the body of the response in JSON. The data is composed of a list of ``Step`` where a ``Step`` is defined by the following interface:
+```typescript
+interface Step {
+    name: string;
+    status: string;
+}
+```
+
 You must be able to access the information returned by this request by making a request to your own service.
 
 ### 4. Free the Prisoners (6 points)
@@ -171,7 +183,7 @@ To obtain weather information, the prisoners will make a request to the path ``/
 The request body will contain the coordinates of the location for which they want to obtain the weather. The payload is in the following JSON format:
 ```typescript
 interface Coords {
-    x: number; // lattitude
+    x: number; // latitude
     y: number; // longitude
 }
 ```
@@ -182,7 +194,6 @@ export interface Weather {
     temperature: number; // Celcius
     windSpeed: number; // Km/h
     precipitation: number; // mm
-    description: string; // Description of the current conditions
 }
 ```
 
@@ -202,7 +213,7 @@ Requests from the jungle (to ``/router``) will have the parameter ``request=map`
 The payload of the body will be in the following format:
 ```typescript
 interface MapRequest {
-    x: number, // lattitude, float
+    x: number, // latitude, float
     y: number, // longitude, float
     size: number, // map size, positive integer
 }
