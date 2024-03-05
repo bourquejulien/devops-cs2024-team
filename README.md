@@ -296,17 +296,23 @@ Les critères d'évaluation sont les suivants :
 | Qualité de la solution  | /1        |
 
 Les quatre premiers critères sont détaillées dans la section [Épreuves](#épreuves).
-Le dernier critère est beaucoup plus subjectif et sera évalué en fonction de la cohérence générale de la solution.
-Il ne s'agit pas proprement dit d'évaluer la qualité du code, mais plutôt du fonctionnement général. Des points seront retranché
-en cas de non-respect (évident) de bonne pratique ou encore l'utilisation de hack pouvant être évités.
+
+Le dernier critère sera évalué en fonction de la cohérence générale de la solution et sera évalué selon les
+critères suivants (perte de 1 point au maximum) :
+- Aucun linter n'est utilisé : -0.5.
+- Aucune convention propre au langage utilisée n'est respectée : -0.5.
+- Code dupliqué (ex. ne pas utiliser le script de déploiement dans le pipeline) : -0.5.
+- Présence de secrets dans le code (ex. mot de passe) : -0.5.
+- Valeurs propres à environment présentes directement dans le code (tentez d'utiliser des variables d'environnement) : -0.25.
 
 > À noter : L'évaluation est partiellement automatisée, néanmoins l'ensemble de votre travail sera révisé manuellement.
-> En cas de doute, n'hésitez pas à indiquer vos suppositions en commentaire.
+> En cas de doute, n'hésitez pas à indiquer vos suppositions dans la section [Commentaires](#Commentates) à la fin de ce fichier.
 
 ### Remise
 - La remise se fait par Git, vous devez soumettre par l'entremise de ce dépôt tout votre travail
 - Le dernier commit poussé sur la branche `main` sera corrigé
 - Tout commit poussé après l'heure de remise sera ignoré
 
-## Erreurs fréquentes
-TODO ?
+## Commentates
+
+...

@@ -5,7 +5,7 @@ Welcome to the DevOps competition. This competition aims to put your knowledge o
 
 Before starting, it is essential to have access to the following resources:
 - Your team number.
-- Your team username, in the format: `team{team number}@cs2024.one`
+- Your team username, in the format: ``team{team number}@cs2024.one``
 - Your team password.
 
 **This information will be provided to you upon your arrival.**
@@ -16,7 +16,10 @@ Before starting, it is essential to have access to the following resources:
 - The use of generative AI is prohibited (ChatGPT, Copilot, ...): the use of these tools will be considered as external communication.
 - Do not attempt to harm the competition infrastructure.
 
-> Note: Online help forums (Stack Overflow, Reddit, ...) are not considered external help. Their use is therefore allowed. However, you cannot ask questions on these forums. In case of non-compliance with these rules, penalties will be applied: point deduction, disqualification.
+> Note: Online help forums (Stack Overflow, Reddit, ...) are not considered external help. Their use is therefore allowed.
+> However, you cannot ask questions on these forums. In case of non-compliance with these rules, penalties will be applied: point deduction, disqualification.
+
+In case of non-compliance with these rules, penalties will be applied: **loss of points, disqualification**.
 
 ## Introduction and Objective
 Some of your fellow citizens are trapped inside a bunker in an isolated location surrounded by trees! Your objective is to help them escape.
@@ -285,17 +288,22 @@ The grading criteria are as follows:
 | Solution quality   | /1        |
 
 The first four criteria are detailed in the [Challenges](#challenges) section.
-The last criterion is much more subjective and will be evaluated based on the overall coherence of the solution.
-It is not strictly about evaluating the quality of the code, but rather the general functionality. Points will be deducted
-for obvious non-compliance with good practices or the use of hacks that could be avoided.
+
+The final criterion will be evaluated based on the overall coherence of the solution and will be assessed according to the following criteria (loss of up to 1 point):
+- No linter is used: -0.5.
+- No language-specific conventions are respected: -0.5.
+- Duplicated code (e.g., not using the deployment script in the pipeline): -0.5.
+- Presence of secrets in the code (e.g., password): -0.5.
+- Environment-specific values present directly in the code (try to use environment variables): -0.25.
 
 > Note: The evaluation is partially automated, however, all of your work will be reviewed manually.
-> In case of doubt, do not hesitate to indicate your assumptions in comments.
+> If in doubt, indicate your assumptions in the [Comments](#comments) section à the end of this file.
 
 ### Submission
 - The submission is done through Git, you must submit all your work through this repository
 - The last commit pushed to the `main` branch will be graded
 - Any commit pushed after the submission deadline will be ignored
 
-## Common Mistakes
-TODO?
+## Comments
+
+...
