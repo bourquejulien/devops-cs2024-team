@@ -1,7 +1,10 @@
 ARG NAME=rusters
 
-FROM rust:1.75 as build
+FROM rust:1.76-alpine3.19 AS build
 ARG NAME
+
+RUN apk add --no-cache musl-dev
+
 RUN USER=root cargo new --bin $NAME
 WORKDIR /$NAME
 
@@ -9,16 +12,16 @@ COPY ./Cargo.lock ./Cargo.lock
 COPY ./Cargo.toml ./Cargo.toml
 
 RUN cargo build --release
-RUN rm src/*.rs
 
+RUN rm src/*.rs
 COPY ./src ./src
 
-RUN rm ./target/release/deps/$NAME*
+RUN rm -f ./target/release/deps/$NAME*
 RUN cargo build --release
 
-FROM rust:1.75-slim-bookworm as final
+FROM alpine:3.19.1 AS final
 ARG NAME
-EXPOSE 4000
+EXPOSE 5000
 
 WORKDIR /app
 COPY --from=build /$NAME/target/release/$NAME app
