@@ -22,6 +22,7 @@ Une sous-catégorie ne peut avoir de score négatif.
 - Le serveur web doit être fonctionnel : -1.
 - Le serveur web doit retourner un code d'erreur 2XX sur les requêtes effectuées : -0.5.
 - Le serveur web doit être codé à l'aide de Rust : -1.5
+- Le serveur web doit s'arrêter avec un SIGINT : -0.5.
 
 #### 1.2 Conteneur Docker (3.5 points)
 - L'image construite doit permettre l'utilisation du serveur web (l'image doit être fonctionnelle) : -2.5.
